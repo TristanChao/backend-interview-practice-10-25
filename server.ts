@@ -38,9 +38,27 @@ app.get('/api/movies', async (req, res, next) => {
     const sql = `
       select *
       from "movies"
+      order by "movieId" desc;
     `;
     const result = await db.query(sql);
     res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+})
+
+app.get('/api/movies/:movieId', async (req, res, next) => {
+  try {
+    const {movieId} = req.params;
+    const sql = `
+      select *
+      from "movies"
+      where "movieId" = $1;
+    `;
+    const result = await db.query(sql, [movieId]);
+    const movie = result.rows[0];
+    if (!movie) throw new ClientError(404, `movie ${movieId} not found`)
+    res.json(movie);
   } catch (err) {
     next(err);
   }

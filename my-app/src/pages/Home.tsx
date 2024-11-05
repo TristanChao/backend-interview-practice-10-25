@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getRatingsList, Rating } from "../lib/data";
 import { FaStar } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export function Home() {
   const [ratings, setRatings] = useState<Rating[]>([]);
@@ -20,14 +21,17 @@ export function Home() {
   }, [])
 
   return (
-    <div className='min-w-[375px] flex justify-center px-4'>
-      <div className='basis-full max-w-[1400px]'>
-        <h1 className='text-[20px] mt-6'>All Ratings</h1>
-        <div className='flex flex-wrap'>
-          {ratings.map((rating, index) => <RatingCard key={index} rating={rating} />)}
-        </div>
+    <>
+      <div className='flex items-center mt-6'>
+        <span className='text-[20px] mr-12'>All Ratings</span>
+        <Link to='/review/0' className='h-full flex items-center bg-blue-600 text-white px-2 py-1 rounded-md'>
+          <span>+ Create Rating</span>
+        </Link>
       </div>
-    </div>
+      <div className='flex flex-wrap'>
+        {ratings.map((rating, index) => <RatingCard key={index} rating={rating} />)}
+      </div>
+    </>
   );
 }
 
@@ -43,7 +47,7 @@ function RatingCard({rating}: RatingCardProps) {
   const star5Class = rating.rating >= 5 ? 'text-yellow-500' : 'text-grey-100';
   
   return (
-    <div className='bg-blue-100 rounded-md mt-3 mr-2 px-3 py-3 max-w-[400px] flex items-center justify-between basis-full'>
+    <Link to={`/review/${rating.movieId}`} className='bg-blue-100 rounded-md mt-3 mr-2 px-3 py-3 max-w-[400px] flex items-center justify-between basis-full'>
       <span className='mr-3'>{rating.title}</span>
       <div className='flex'>
         <div className={star1Class}><FaStar /></div>
@@ -52,6 +56,6 @@ function RatingCard({rating}: RatingCardProps) {
         <div className={star4Class}><FaStar /></div>
         <div className={star5Class}><FaStar /></div>
       </div>
-    </div>
+    </Link>
   );
 }

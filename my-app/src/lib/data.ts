@@ -1,6 +1,6 @@
 
 export type Rating = {
-  ratingId?: number;
+  movieId?: number;
   title: string;
   summary: string;
   imdbLink: string;
@@ -33,8 +33,15 @@ export async function getRatingsList() {
   return ratings;
 }
 
-export async function updateRating({ratingId, title, summary, imdbLink, rating}: Rating) {
-  if (ratingId === undefined || !title || !summary || !imdbLink || !rating) throw new Error('ratingId is required');
+export async function getSingleRating(movieId: number) {
+  const response = await fetch(`/api/movies/${movieId}`);
+  if (!response.ok) throw new Error('error fetching movies');
+  const rating = await response.json();
+  return rating;
+}
+
+export async function updateRating({movieId, title, summary, imdbLink, rating}: Rating) {
+  if (movieId === undefined || !title || !summary || !imdbLink || !rating) throw new Error('movieId is required');
   const req = {
     method: 'put',
     headers: {
@@ -44,20 +51,20 @@ export async function updateRating({ratingId, title, summary, imdbLink, rating}:
       title, summary, imdbLink, rating
     })
   }
-  const response = await fetch(`/api/movies/${ratingId}`, req);
+  const response = await fetch(`/api/movies/${movieId}`, req);
   if (!response.ok) throw new Error('error updating rating');
   const updatedRating = await response.json();
   return updatedRating;
 }
 
-export async function deleteRating(ratingId: number) {
-  if (ratingId === undefined) {
-    throw new Error('ratingId is required');
+export async function deleteRating(movieId: number) {
+  if (movieId === undefined) {
+    throw new Error('movieId is required');
   }
   const req = {
     method: 'delete',
   }
-  const response = await fetch(`/api/movies/${ratingId}`, req);
+  const response = await fetch(`/api/movies/${movieId}`, req);
   if (!response.ok) throw new Error('error deleting rating');
   const deletedRating = await response.json();
   return deletedRating;
